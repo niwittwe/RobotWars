@@ -13,8 +13,13 @@ public class GameController {
         Robot robot = new Robot(robotName, 1, 1, 'Θ');
         RobotView.display(robot);
 
+        Robot enemy = new Robot("Fieser Matz", 15, 10, '█');
+
         Battlefield battlefield = new Battlefield(15, 10);
+
         battlefield.setField(robot.getX(), robot.getY(), robot.getSymbol());
+        battlefield.setField(enemy.getX(), enemy.getY(), enemy.getSymbol());
+
         BattlefieldView.display(battlefield);
 
         int newX;
