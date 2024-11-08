@@ -3,6 +3,7 @@ package com.btc;
 import com.btc.enums.Direction;
 import com.btc.models.Battlefield;
 import com.btc.models.Robot;
+import com.btc.services.RobotService;
 import com.btc.views.*;
 
 public class GameController {
@@ -14,26 +15,32 @@ public class GameController {
         RobotView.display(robot);
 
         Robot enemy = new Robot("Fieser Matz", 15, 10, '█');
-
         Battlefield battlefield = new Battlefield(15, 10);
 
         battlefield.setField(robot.getX(), robot.getY(), robot.getSymbol());
         battlefield.setField(enemy.getX(), enemy.getY(), enemy.getSymbol());
 
-        BattlefieldView.display(battlefield);
-
+        Robot winner = null;
         int newX;
         int newY;
+
         do {
-            Direction direction = MoveRobotView.display();
-            newX = robot.getX() + direction.getX();
-            newY = robot.getY() + direction.getY();
-        } while (!battlefield.isValidField(newX, newY));
+            BattlefieldView.display(battlefield);
+            do {
+                Direction direction = MoveRobotView.display();
+                newX = robot.getX() + direction.getX();
+                newY = robot.getY() + direction.getY();
+            } while (!battlefield.isValidField(newX, newY));
 
-        battlefield.setField(robot.getX(), robot.getY(), ' ');
-        robot.setPosition(newX, newY);
-        battlefield.setField(robot.getX(), robot.getY(), robot.getSymbol());
+            battlefield.setField(robot.getX(), robot.getY(), ' ');
 
-        BattlefieldView.display(battlefield);
+            robot.setPosition(newX, newY);
+            battlefield.setField(robot.getX(), robot.getY(), robot.getSymbol());
+
+            if (RobotService.checkCollision(robot, enemy)) {
+                winner = RobotService.getWinner(robot, enemy);
+            }
+        } while (null == winner);
+        WinnerView.display(winner);
     }
 }
